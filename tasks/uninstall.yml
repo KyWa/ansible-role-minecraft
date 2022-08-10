@@ -1,0 +1,40 @@
+---
+- name: Run a Backup prior to removal
+  include_tasks: backup.yml
+  when: minecraft_backup == true
+
+- name: Stop a Minecraft Server instance
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    enabled: false
+    state: stopped
+  ignore_errors: true
+
+- name: Remove a Minecraft Server instance
+  file:
+    path: "{{ minecraft_directory }}"
+    state: absent
+
+- name: Delete systemd service
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/lib/systemd/system/{{ minecraft_instance_name }}.service
+    - /etc/systemd/system/multi-user.target.wants/{{ minecraft_instance_name }}.service
+  ignore_errors: true
+
+- name: Uninstall Java - RPM Systems
+  dnf:
+    name: "java-{{ minecraft_java_version }}-openjdk"
+    state: absent
+    allowerasing: yes
+    autoremove: yes
+  when: ansible_pkg_mgr == "dnf"
+
+- name: Uninstall Java - DPKG Systems
+  apt:
+    name: "openjdk-{{ minecraft_java_version }}-jre-headless"
+    state: absent
+    autoremove: yes
+  when: ansible_pkg_mgr == "apt"

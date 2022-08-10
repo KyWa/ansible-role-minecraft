@@ -1,0 +1,24 @@
+---
+- name: Install a Minecraft Server
+  include_tasks: install.yml
+  when: minecraft_install == true
+
+- name: Uninstall a Minecraft Server
+  include_tasks: uninstall.yml
+  when: minecraft_uninstall == true
+
+- name: Upgrade a Minecraft Server
+  include_tasks: upgrade.yml
+  when: minecraft_upgrade == true
+
+- name: Change a Minecraft Servers Configuration
+  include_tasks: config-change.yml
+  when: minecraft_config_change == true
+
+- name: Backup a Minecraft Server
+  include_tasks: backup.yml
+  when: minecraft_backup == true
+
+- name: Restore a Minecraft Server
+  include_tasks: restore.yml
+  when: minecraft_restore == true

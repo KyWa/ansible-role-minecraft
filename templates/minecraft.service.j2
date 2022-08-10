@@ -1,0 +1,15 @@
+[Unit] 
+Description=Starts a Minecraft Server
+
+[Service]
+WorkingDirectory={{ minecraft_directory }}
+
+User={{ minecraft_user }}
+Group={{ minecraft_group }}
+Restart=on-failure
+RestartSec=20 5
+
+ExecStart=/usr/bin/java {{ minecraft_java_opts }} -jar {{ minecraft_directory }}/server.jar nogui
+
+[Install]
+WantedBy=multi-user.target

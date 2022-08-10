@@ -1,0 +1,14 @@
+---
+- name: Restart a Minecraft Server instance
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: restarted
+  listen: "restart minecraft"
+
+- name: Verify a Minecraft Server instance is up
+  shell: tail {{ minecraft_directory }}/logs/latest.log
+  register: server_status
+  until: server_status.stdout.find('Done') != -1
+  retries: 15
+  delay: 25
+  listen: "restart minecraft"

@@ -1,0 +1,13 @@
+---
+- name: Stop an existing Minecraft Server
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: stopped
+  notify: restart minecraft
+
+- name: Set Minecraft Server version to latest
+  set_fact:
+    minecraft_version: "latest"
+
+- name: Update a Minecraft Servers version
+  include_tasks: software.yml

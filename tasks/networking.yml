@@ -1,0 +1,23 @@
+---
+- name: Opening Firewall Ports
+  block:
+    - name: Open Minecraft Server Port on Firewall
+      firewalld:
+        port: "{{ minecraft_server_port }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Open Minecraft Query Port on Firewall
+      firewalld:
+        port: "{{ minecraft_query_port }}/udp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Open Minecraft RCON Port on Firewall
+      firewalld:
+        port: "{{ rcon_port }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes

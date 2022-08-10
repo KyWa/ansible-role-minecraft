@@ -1,0 +1,12 @@
+---
+- name: Minecraft Server preperation
+  include_tasks: server-prep.yml
+
+- name: Seteup firewall rules
+  include_tasks: networking.yml
+
+- name: Obtain Minecraft Server
+  include_tasks: software.yml
+
+- name: Start Minecraft Server
+  include_tasks: start-server.yml

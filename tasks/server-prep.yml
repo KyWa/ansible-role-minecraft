@@ -1,0 +1,45 @@
+---
+- name: Create Minecraft group
+  group:
+    name: "{{ minecraft_group }}"
+    state: present
+
+- name: Create Minecraft user
+  user:
+    name: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    comment: "{{ minecraft_user_description }}"
+    state: present
+
+- name: Create Minecraft Server Directory
+  file:
+    path: "{{ minecraft_directory }}"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    state: directory
+    mode: 0755
+
+- name: Copy the EULA
+  copy:
+    src: eula.txt
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    dest: "{{ minecraft_directory }}/eula.txt"
+
+- name: Create ResourcePack directory
+  file:
+    path: "{{ minecraft_directory }}/resourcepack"
+    owner: "{{ minecraft_user }}"
+    group: "{{ minecraft_group }}"
+    state: directory
+    mode: 0755
+
+- name: Create server.properties from template
+  template:
+    src: server.properties.j2
+    dest: "{{ minecraft_directory }}/server.properties"
+
+- name: Create the systemd service from template
+  template:
+    src: minecraft.service.j2
+    dest: /usr/lib/systemd/system/{{ minecraft_instance_name }}.service

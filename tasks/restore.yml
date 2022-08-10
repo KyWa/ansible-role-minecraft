@@ -1,0 +1,41 @@
+---
+- name: Ensure backup mount exists
+  stat:
+    path: "{{ minecraft_backup_directory }}"
+  register: minecraft_backup_dir
+
+- name: Create Minecraft Server backups directory
+  file:
+    path: "{{ minecraft_backup_directory }}"
+    state: directory
+  when: minecraft_backup_dir.stat.exists != true
+
+- name: Mount the Minecraft Server Backup Share
+  mount:
+    path: "{{ minecraft_backup_directory }}"
+    src: "{{ minecraft_backup_share }}"
+    fstype: "{{ minecraft_backup_share_fstype }}"
+    state: mounted
+
+- name: Stop the Minecraft Server Service
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: stopped
+
+- name: Restore systemd unit file
+  copy:
+    remote_src: yes
+    dest: /usr/lib/systemd/system/{{ minecraft_instance_name }}.service
+    src: "{{ minecraft_backup_directory }}/{{ minecraft_instance_name }}.service"
+
+- name: Extract and Copy the Minecraft Server Directory
+  unarchive:
+    dest: "{{ minecraft_directory }}"
+    src: "{{ minecraft_backup_directory }}/minecraft-{{ minecraft_version }}-backup.tgz"
+    remote_src: yes
+  notify: restart minecraft
+
+- name: Unmount the Minecraft Server Backup Share
+  mount:
+    path: "{{ minecraft_backup_directory }}"
+    state: unmounted

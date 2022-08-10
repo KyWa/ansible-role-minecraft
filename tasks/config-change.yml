@@ -1,0 +1,11 @@
+---
+- name: Stop a Minecraft Server
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: stopped
+  notify: restart minecraft
+
+- name: Create server.properties from template
+  template:
+    src: server.properties.j2
+    dest: "{{ minecraft_directory }}/server.properties"

@@ -1,0 +1,52 @@
+# TODO - Possibly turn first task into a block/rescue type
+---
+- name: Check if backup share type is set
+  fail:
+    msg: "The variable 'minecraft_backup_share_type' is not set. Failing backup Task"
+  when: minecraft_backup_share_type == ""
+
+- name: Ensure backup mount exists
+  stat:
+    path: "{{ minecraft_backup_directory }}"
+  register: minecraft_backup_dir
+
+- name: Create Minecraft Server backups directory
+  file:
+    path: "{{ minecraft_backup_directory }}"
+    state: directory
+  when: minecraft_backup_dir.stat.exists != true
+
+- name: Mount the Minecraft Server Backup Share
+  mount:
+    path: "{{ minecraft_backup_directory }}"
+    src: "{{ minecraft_backup_share }}"
+    fstype: "{{ minecraft_backup_share_fstype }}"
+    state: mounted
+
+- name: Backup the systemd servie
+  copy:
+    remote_src: yes
+    src: /usr/lib/systemd/system/{{ minecraft_instance_name }}.service
+    dest: "{{ minecraft_backup_directory }}/{{ minecraft_instance_name }}.service"
+
+- name: Stop the Minecraft Server Service
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: stopped
+
+- name: Archive and Backup the Minecraft Server Directory
+  archive:
+    path: "{{ minecraft_directory }}/*"
+    dest: "{{ minecraft_backup_directory }}/minecraft-{{ minecraft_version }}-backup.tgz"
+    format: gz
+    mode: 0644
+
+- name: Start the Minecraft Server Service
+  systemd:
+    name: "{{ minecraft_instance_name }}"
+    state: started
+
+- name: Unmount the Minecraft Server Backup Share
+  mount:
+    path: "{{ minecraft_backup_directory }}"
+    state: unmounted
