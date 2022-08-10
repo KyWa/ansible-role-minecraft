@@ -16,7 +16,7 @@ The defaults found in `defaults/main.yml` contain all of Minecraft Servers `serv
 * `minecraft_install` - Set this to true to install a Minecraft Server instance
 * `minecraft_uninstall` - Set this to true to uninstall a Minecraft Server instance
 * `minecraft_upgrade` - Set this to true to upgrade a Minecraft Server instance
-* `minecraft_config_change` - Set this to true to change the configuration a Minecraft Server instance with vars for `server.properties`
+* `minecraft_config_change` - Set this to true to change the configuration of a Minecraft Server instance with vars for `server.properties`
 * `minecraft_backup` - Set this to true to backup a Minecraft Server instance
 * `minecraft_restore` - Set this to true to restore a Minecraft Server instance
 
