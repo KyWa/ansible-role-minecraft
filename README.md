@@ -1,4 +1,4 @@
-minecraft
+Ansible Role for Minecraft Server
 =========
 
 This role is for Ansible to install Minecraft Servers. It provides the functionality to create multiple instances on a single host as each option is variablized.
