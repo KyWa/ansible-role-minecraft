@@ -8,13 +8,13 @@
 - name: Install Java - DPKG Systems
   apt:
     name: "openjdk-{{ minecraft_java_version }}-jre-headless"
-    state: installed
+    state: present
   when: ansible_pkg_mgr == "apt"
 
 - name: PREP - Verify jq exists
   block:
     - name: PREP - Check if jq exists on server
-      command: "command -v jq"
+      command: "which jq"
   rescue:
     - name: PREP - Download jq
       uri:
