@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  vars:
+    minecraft_install: true
+  tasks:
+    - name: "Include kywa.minecraft"
+      include_role:
+        name: "kywa.minecraft"

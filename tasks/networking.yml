@@ -1,5 +1,5 @@
 ---
-- name: Opening Firewall Ports
+- name: Opening Firewall Ports - RPM
   block:
     - name: Open Minecraft Server Port on Firewall
       firewalld:
@@ -21,3 +21,25 @@
         permanent: yes
         state: enabled
         immediate: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Opening Firewall Ports - DPKG
+  block:
+    - name: Open Minecraft Server Port on Firewall
+      ufw:
+        port: "{{ minecraft_server_port }}"
+        rule: allow
+        proto: tcp
+
+    - name: Open Minecraft Query Port on Firewall
+      ufw:
+        port: "{{ minecraft_query_port }}"
+        rule: allow
+        proto: udp
+
+    - name: Open Minecraft RCON Port on Firewall
+      ufw:
+        port: "{{ rcon_port }}"
+        rule: allow
+        proto: tcp
+  when: ansible_os_family == "Debian"
