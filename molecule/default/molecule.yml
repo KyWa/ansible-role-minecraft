@@ -2,19 +2,19 @@
 dependency:
   name: galaxy
 driver:
-  name: docker
+  name: podman
 platforms:
   - name: rpm
-    image: quay.io/kywa/molecule-instances:rpm
+    image: quay.io/kywa/ansible-molecule-instances:rpm
     pre_build_image: true
     published_ports:
       - 0.0.0.0:50000:25565/tcp
-    command: /sbin/init
+    command: /lib/systemd/systemd
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     privileged: true
   - name: dpkg
-    image: quay.io/kywa/molecule-instances:dpkg
+    image: quay.io/kywa/ansible-molecule-instances:dpkg
     pre_build_image: true
     published_ports:
       - 0.0.0.0:50001:25565/tcp
